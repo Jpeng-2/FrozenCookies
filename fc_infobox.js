@@ -1,5 +1,3 @@
-// functionality for the infobox
-
 function drawCircles(t_d, x, y) {
   var maxRadius,
     heightOffset,
@@ -135,7 +133,6 @@ function buffDuration(buffName) {
 }
 
 function updateTimers() {
-  // update infobox calculations and assemble output -- called every draw tick
   var chainPurchase,
     bankPercent,
     purchasePercent,
@@ -143,29 +140,27 @@ function updateTimers() {
     actualCps,
     t_draw,
     maxColor,
-    height,
-    gc_delay =
-      (probabilitySpan("golden", Game.shimmerTypes.golden.time, 0.5) -
-        Game.shimmerTypes.golden.time) /
-      maxCookieTime(),
-    gc_max_delay =
-      (probabilitySpan("golden", Game.shimmerTypes.golden.time, 0.99) -
-        Game.shimmerTypes.golden.time) /
-      maxCookieTime(),
-    gc_min_delay =
-      (probabilitySpan("golden", Game.shimmerTypes.golden.time, 0.01) -
-        Game.shimmerTypes.golden.time) /
-      maxCookieTime(),
-    clot_delay = buffDuration("Clot") / maxCookieTime(),
-    elder_frenzy_delay = buffDuration("Elder frenzy") / maxCookieTime(),
-    frenzy_delay = buffDuration("Frenzy") / maxCookieTime(),
-    dragon_harvest_delay = buffDuration("Dragon Harvest") / maxCookieTime(),
-    click_frenzy_delay = buffDuration("Click frenzy") / maxCookieTime(),
-    dragonflight_delay = buffDuration("Dragonflight") / maxCookieTime(),
-    cursed_finger_delay = buffDuration("Cursed finger") / maxCookieTime(),
-    building_special_delay = hasBuildingSpecialBuff() / maxCookieTime(),
-    cookie_storm_delay = buffDuration("Cookie storm") / maxCookieTime(),
-    // useless decimal_HC_complete = (Game.HowMuchPrestige(Game.cookiesEarned + Game.cookiesReset)%1),
+    height;
+
+  var gcTime = (Game.shimmerTypes && Game.shimmerTypes.golden) ? Game.shimmerTypes.golden.time : 0;
+  var maxTime = (typeof maxCookieTime === "function" ? maxCookieTime() : 0) || 1;
+
+  var gc_max_ticks = Math.max(0, (typeof probabilitySpan === "function" ? probabilitySpan("golden", gcTime, 0.99) : 0) - gcTime);
+  var gc_mid_ticks = Math.max(0, (typeof probabilitySpan === "function" ? probabilitySpan("golden", gcTime, 0.50) : 0) - gcTime);
+  var gc_min_ticks = Math.max(0, (typeof probabilitySpan === "function" ? probabilitySpan("golden", gcTime, 0.01) : 0) - gcTime);
+
+  var gc_delay = gc_mid_ticks / maxTime,
+    gc_max_delay = gc_max_ticks / maxTime,
+    gc_min_delay = gc_min_ticks / maxTime,
+    clot_delay = buffDuration("Clot") / maxTime,
+    elder_frenzy_delay = buffDuration("Elder frenzy") / maxTime,
+    frenzy_delay = buffDuration("Frenzy") / maxTime,
+    dragon_harvest_delay = buffDuration("Dragon Harvest") / maxTime,
+    click_frenzy_delay = buffDuration("Click frenzy") / maxTime,
+    dragonflight_delay = buffDuration("Dragonflight") / maxTime,
+    cursed_finger_delay = buffDuration("Cursed finger") / maxTime,
+    building_special_delay = hasBuildingSpecialBuff() / maxTime,
+    cookie_storm_delay = buffDuration("Cookie storm") / maxTime,
     bankTotal = delayAmount(),
     purchaseTotal = nextPurchase().cost,
     bankCompletion = bankTotal
@@ -176,6 +171,7 @@ function updateTimers() {
     chainTotal = 0,
     chainFinished,
     chainCompletion = 0;
+
   if (nextChainedPurchase().cost > nextPurchase().cost) {
     chainPurchase = nextChainedPurchase().purchase;
     chainTotal =
@@ -187,6 +183,7 @@ function updateTimers() {
       (chainFinished + Math.max(Game.cookies - bankTotal, 0)) /
       (bankTotal + chainTotal);
   }
+
   bankPercent = Math.min(Game.cookies, bankTotal) / (bankTotal + purchaseTotal);
   purchasePercent = purchaseTotal / (purchaseTotal + bankTotal);
   bankMax = bankTotal / (purchaseTotal + bankTotal);
@@ -244,25 +241,25 @@ function updateTimers() {
       });
     }
   }
-  if (gc_delay > 0) {
+  if (gcTime > 0 && gc_max_ticks > 0) {
     t_draw.push({
       f_percent: gc_max_delay,
       c1: "rgba(255, 155, 0, 1)",
       name: "Golden Cookie Maximum (99%)",
-      display: timeDisplay((gc_max_delay * maxCookieTime()) / Game.fps),
+      display: timeDisplay(gc_max_ticks / Game.fps),
     });
     t_draw.push({
       f_percent: gc_delay,
       c1: "rgba(255, 195, 0, 1)",
       name: "Golden Cookie Estimate (50%)",
-      display: timeDisplay((gc_delay * maxCookieTime()) / Game.fps),
+      display: timeDisplay(gc_mid_ticks / Game.fps),
       overlay: true,
     });
     t_draw.push({
       f_percent: gc_min_delay,
       c1: "rgba(255, 235, 0, 1)",
       name: "Golden Cookie Minimum (1%)",
-      display: timeDisplay((gc_min_delay * maxCookieTime()) / Game.fps),
+      display: timeDisplay(gc_min_ticks / Game.fps),
       overlay: true,
     });
   }
@@ -340,5 +337,5 @@ function updateTimers() {
     });
   }
   height = $("#backgroundLeftCanvas").height() - 140;
-  drawCircles(t_draw, 20, height);
+  drawCircles(t_draw, 10, height);
 }
