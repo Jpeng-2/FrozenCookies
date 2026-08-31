@@ -221,7 +221,7 @@ function scientificNotation(value) {
   return value;
 }
 
-window.numberFormatters = window.numberFormatters || [
+window.numberFormatters = [
   rawFormatter,
   formatEveryThirdPower([
     "",
