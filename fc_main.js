@@ -119,7 +119,7 @@ function setOverrides(gameSaveData) {
   }
   Game.Win = fcWin;
 
-  nextPurchase(true);
+  FrozenCookies.nextPurchase(true);
   Game.RefreshStore();
   Game.RebuildUpgrades();
   beautifyUpgradesAndAchievements();
