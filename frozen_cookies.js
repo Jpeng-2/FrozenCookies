@@ -18,7 +18,7 @@ const scriptElement =
   document.getElementById("modscript_frozen_cookies");
 const baseUrl = scriptElement
   ? scriptElement.getAttribute("src").replace(/\/frozen_cookies\.js$/, "")
-  : "https://icehawk78.github.io/FrozenCookies/";
+  : "https://cdn.jsdelivr.net/gh/Jpeng-2/FrozenCookies@main/";
 
 var FrozenCookies = {
   baseUrl: baseUrl,
