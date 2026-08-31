@@ -46,7 +46,7 @@ const script_list = [
   "https://cdn.jsdelivr.net/gh/Jpeng-2/FrozenCookies@main/fc_main.js",
   "https://cdn.jsdelivr.net/gh/Jpeng-2/FrozenCookies@main/fc_button.js",
   "https://cdn.jsdelivr.net/gh/Jpeng-2/FrozenCookies@main/fc_spellpredict.js",
-  "https://cdn.jsdelivr.net/gh/Jpeng-2/FrozenCookies@main/fc_infobox",
+  "https://cdn.jsdelivr.net/gh/Jpeng-2/FrozenCookies@main/fc_infobox.js",
 ];
 
 FrozenCookies.loadInterval = setInterval(() => {
