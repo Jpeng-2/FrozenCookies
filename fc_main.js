@@ -221,7 +221,7 @@ function scientificNotation(value) {
   return value;
 }
 
-const numberFormatters = [
+var numberFormatters = [
   rawFormatter,
   formatEveryThirdPower([
     "",
