@@ -1,5 +1,5 @@
 // Global Variables
-var lastCompatibleVersion = 2.031;
+const lastCompatibleVersion = 2.052;
 if (Game.version > lastCompatibleVersion) {
   console.log(
     "WARNING: The Cookie Clicker version is newer than this version of Frozen Cookies."
@@ -13,13 +13,13 @@ if (Game.version > lastCompatibleVersion) {
   );
 }
 
-var scriptElement =
-  document.getElementById("frozenCookieScript") !== null
-    ? document.getElementById("frozenCookieScript")
-    : document.getElementById("modscript_frozen_cookies");
-var baseUrl =  scriptElement !== null
-    ? scriptElement.getAttribute("src").replace(/\/frozen_cookies\.js$/, "")
-    : "https://icehawk78.github.io/FrozenCookies/";
+const scriptElement =
+  document.getElementById("frozenCookieScript") ||
+  document.getElementById("modscript_frozen_cookies");
+const baseUrl = scriptElement
+  ? scriptElement.getAttribute("src").replace(/\/frozen_cookies\.js$/, "")
+  : "https://icehawk78.github.io/FrozenCookies/";
+
 var FrozenCookies = {
   baseUrl: baseUrl,
   branch: "Main-",
@@ -27,7 +27,7 @@ var FrozenCookies = {
 };
 
 // Load external libraries
-var script_list = [
+const script_list = [
   "https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js",
   "https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css",
   "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js",
@@ -49,8 +49,8 @@ var script_list = [
   FrozenCookies.baseUrl + "/fc_infobox.js",
 ];
 
-FrozenCookies.loadInterval = setInterval(function () {
-  if (Game && Game.ready) {
+FrozenCookies.loadInterval = setInterval(() => {
+  if (typeof Game !== "undefined" && Game && Game.ready) {
     clearInterval(FrozenCookies.loadInterval);
     FrozenCookies.loadInterval = 0;
     fcInit();
@@ -59,13 +59,11 @@ FrozenCookies.loadInterval = setInterval(function () {
 
 function loadScript(id) {
   if (id >= script_list.length) {
-    registerMod("frozen_cookies"); // when the mod is registered, the save data is passed in the load function
+    registerMod("frozen_cookies"); // register mod when scripts finish loading
   } else {
-    var url = script_list[id];
+    const url = script_list[id];
     if (/\.js$/.exec(url)) {
-      $.getScript(url, function () {
-        loadScript(id + 1);
-      });
+      $.getScript(url, () => loadScript(id + 1));
     } else if (/\.css$/.exec(url)) {
       $("<link>")
         .attr({
@@ -83,7 +81,7 @@ function loadScript(id) {
 }
 
 function fcInit() {
-  var jquery = document.createElement("script");
+  const jquery = document.createElement("script");
   jquery.setAttribute("type", "text/javascript");
   jquery.setAttribute("src", "https://code.jquery.com/jquery-3.6.0.min.js");
   jquery.setAttribute(
@@ -91,8 +89,6 @@ function fcInit() {
     "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
   );
   jquery.setAttribute("crossorigin", "anonymous");
-  jquery.onload = function () {
-    loadScript(0);
-  };
+  jquery.onload = () => loadScript(0);
   document.head.appendChild(jquery);
 }
